@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Detalle Rutinas
+{% endblock title %}
+
+{% block content %}
+
+    <h1>Rutinas para {{ user.username }}</h1>
+
+    <form method="get" action="{% url 'core:consultar_rutinas' %}">
+        <label for="dia_semana_espanol">Seleccionar día de la semana:</label>
+        <select name="dia_semana_espanol" id="dia_semana_espanol">
+            <option value="" {% if not dia_seleccionado %}selected{% endif %}>Todos</option>
+            {% for dia in dias_semana %}
+                <option value="{{ dia|lower }}" {% if dia|lower == dia_seleccionado %}selected{% endif %}>{{ dia }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Filtrar">
+    </form>
+    
+    <!-- Vista -->
+    {% for rutina in rutinas %}
+        {% if dia_seleccionado is none or rutina.dia_semana|lower == dia_seleccionado %}
+            <h3>Fecha: {{ rutina.fecha }} - Día de la Semana: {{ rutina.dia_semana }}</h3>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Ejercicio</th>
+                        <th>Repeticiones</th>
+                        <th>Series</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in rutina.detallerutina_set.all %}
+                        <tr>
+                            <td>{{ detalle.ejercicio.ejercicio }}</td>
+                            <td>{{ detalle.repeticiones }}</td>
+                            <td>{{ detalle.series }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
+
+
+{% endblock content %}

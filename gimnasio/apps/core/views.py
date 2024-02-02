@@ -2,6 +2,8 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
 from django.shortcuts import get_object_or_404
+import calendar
+import locale
 
 from . import models
 from . import forms
@@ -150,3 +152,21 @@ def detallerutina_form(request):
     else:
         form = forms.DetalleRutinaForm()
     return render (request, "core/detallerutina_form.html", {"form": form})
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def consultar_rutinas(request):
+    usuario = request.user
+    rutinas = models.Rutina.objects.filter(cliente__user=usuario)
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+    dias_semana = list(calendar.day_name)
+    dias_semana_espanol = [dia.capitalize() for dia in dias_semana]
+    dia_seleccionado = request.GET.get('dia_semana_espanol')
+    
+    print(f"Día seleccionado: {dia_seleccionado}")
+
+    if dia_seleccionado:
+        rutinas = rutinas.filter(dia_semana__icontains=dia_seleccionado)
+
+    return render(request, 'core/consultar_rutinas.html', {'rutinas': rutinas, 'dias_semana': dias_semana_espanol, 'dia_seleccionado': dia_seleccionado})

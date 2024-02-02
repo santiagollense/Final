@@ -1,11 +1,21 @@
 {% extends 'core/base.html' %}
 
+{% block title %}
+    | Detalle Rutinas
+{% endblock title %}
+
+{% block content_title %}
+    Detalle Rutinas
+{% endblock content_title %}
+
 {% block content %}
-    
-    {% for detallerutina in DetalleRutina %}
+
+    {{DetalleRutinas.rutina}}
+    {% for detallerutina in DetalleRutinas %}
         <ul>
+            
             <li>
-                {{detallerutina.rutina}}
+                
                 {{detallerutina.ejercicio}}
                 {{detallerutina.repeticiones}}
                 {{detallerutina.series}}
@@ -14,4 +24,19 @@
     {% endfor %}
     <button><a href="{% url 'core:detallerutina_form' %}">Cargar Plan de GymBro</a></button>
     <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+
+    <!-- consultar_rutinas.html -->
+    <h1>Rutinas para {{ user.username }}</h1>
+    <ul>
+        {% for rutina in rutinas %}
+            <li>{{ rutina.fecha }} - {{ rutina.dia_semana }}
+                <ul>
+                    {% for detalle in rutina.detallerutina_set.all %}
+                        <li>{{ detalle.ejercicio.nombre }} - Reps: {{ detalle.repeticiones }} - Series: {{ detalle.series }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    
 {% endblock content %}

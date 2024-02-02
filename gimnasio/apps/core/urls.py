@@ -24,4 +24,5 @@ urlpatterns = [
     path('rutina/form', rutina_form, name="rutina_form"),
     path('detallerutina/list', detallerutina_list, name="detallerutina_list"),
     path('detallerutina/form', detallerutina_form, name="detallerutina_form"),
+    path('consultar-rutinas/', consultar_rutinas, name='consultar_rutinas'),
 ]

@@ -1,6 +1,9 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+
+    <button><a href="{% url 'core:register' %}">Nuevo User</a></button>
+
     <form method="post">
         {% csrf_token %}
         {{ form }}
