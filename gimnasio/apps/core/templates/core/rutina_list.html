@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    
+    {% for rutina in Rutinas %}
+        <ul>
+            <li>
+                {{rutina.plan}}
+                {{rutina.rutina}}
+                {{rutina.repeticiones}}
+                {{rutina.series}}
+            </li>
+        </ul>
+    {% endfor %}
+    <button><a href="{% url 'core:rutina_form' %}">Cargar Rutinas</a></button>
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+{% endblock content %}

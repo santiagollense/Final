@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h2>Admin</h2>
+
+    <button><a href="{% url 'core:gym_list' %}">Ver Gimnasios</a></button>
+    <button><a href="{% url 'core:gymbro_list' %}">Ver GymBros</a></button>
+    <button><a href="{% url 'core:turno_list' %}">Ver Turnos</a></button>
+    <button><a href="{% url 'core:entrenamiento_list' %}">Ver Entrenamientos</a></button>
+    <button><a href="{% url 'core:ejercicio_list' %}">Ver Ejercicios</a></button>
+    <button><a href="{% url 'core:rutina_list' %}">Ver Rutinas</a></button>
+    <button><a href="{% url 'core:detallerutina_list' %}">Ver Detalles de Rutinas</a></button>
+    
+{% endblock content %}

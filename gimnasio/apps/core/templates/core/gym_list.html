@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    
+    {% for gym in Gimnasios %}
+        <ul>
+            <li>
+                {{gym.nombre}}
+                {{gym.dir}}
+                {{gym.tel}}
+                {{gym.email}}
+            </li>
+        </ul>
+    {% endfor %}
+
+    <button><a href="{% url 'core:gym_form' %}">Cargar Gimnasios</a></button>
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+{% endblock content %}

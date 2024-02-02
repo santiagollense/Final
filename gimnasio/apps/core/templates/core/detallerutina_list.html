@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    
+    {% for detallerutina in DetalleRutina %}
+        <ul>
+            <li>
+                {{detallerutina.rutina}}
+                {{detallerutina.ejercicio}}
+                {{detallerutina.repeticiones}}
+                {{detallerutina.series}}
+            </li>
+        </ul>
+    {% endfor %}
+    <button><a href="{% url 'core:detallerutina_form' %}">Cargar Plan de GymBro</a></button>
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+{% endblock content %}

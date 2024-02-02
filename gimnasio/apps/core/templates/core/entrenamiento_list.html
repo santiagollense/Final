@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    
+    {% for entrenamiento in Entrenamientos %}
+        <ul>
+            <li>
+                {{entrenamiento.entrenamiento}}
+            </li>
+        </ul>
+    {% endfor %}
+    <button><a href="{% url 'core:entrenamiento_form' %}">Cargar Entrenamientos</a></button>
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+{% endblock content %}

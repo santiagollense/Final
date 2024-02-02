@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    
+    {% for gymbro in Gymbros %}
+        <ul>
+            <li>
+                {{gymbro.nombre}}
+                {{gymbro.tel}}
+                {{gymbro.email}}
+            </li>
+        </ul>
+    {% endfor %}
+
+    <button><a href="{% url 'core:gymbro_form' %}">Cargar GymBros</a></button>
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+    
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    | Inicio
+{% endblock title %}
+
+
+
+{% block content %}
+    
+    {% if user.is_staff %}
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'core:gym_admin' %}" class="btn btn-info w-50">Administración</a></button>
+    </div>
+    {% endif %}
+
+    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="{% static 'core/img/logo.jpeg' %}" alt="..." /></div>
+        <div class="col-lg-5">
+            <h2 class="font-weight-light">COMENZÁ TU SUPERACIÓN PERSONAL</h2>
+            <p>Programas de entrenamiento personalizados, instalaciones modernas y acompañamiento profesional.</p>
+        </div>
+    </div>
+    <!-- Content Row-->
+    
+    <div class="col-md-12 mb-5">
+        <div class="card h-600">
+            <div class="card-body">
+                <div class="row gx-1 gx-lg-3 align-items-center my-1">
+                    <div class="col-md-5 mb-4 align-items-center my-2 align-content-center m-auto">
+                        <h1 class="card-title">SEDE San Nicolás</h1>
+                        <p class="card-text">Segundo Dutari Rodriguez 1008</p>
+                        <a class="btn btn-primary btn-sm" href="#!">Promos y Horarios</a></div>
+                    <div class="col-md-6 mb-2">
+                        <div class="col-lg-12"><img class="img-fluid rounded mb-4 mb-lg-0" src="{% static 'core/img/gym.jpeg' %}" alt="..." /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-12 mb-5">
+        <div class="card h-600">
+            <div class="card-body">
+                <div class="row gx-1 gx-lg-3 align-items-center my-4 text-center">
+                    <h2 class="card-title">NUESTRAS ACTIVIDADES</h2>
+                    <p class="card-text">Elegí la clase que más te guste y viajá con nosotros por el mundo del ejercicio físico.</p>
+                </div>
+                <div class="row gx-6 gx-lg-6 align-items-center my-4">
+                    <div class="col-lg-4"><img class="img-fluid rounded mb-4 mb-lg-0" src="{% static 'core/img/crossfit.jpeg' %}" alt="..." /></div>
+                    <div class="col-lg-4"><img class="img-fluid rounded mb-4 mb-lg-0" src="{% static 'core/img/funcional.jpeg' %}" alt="..." /></div>
+                    <div class="col-lg-4"><img class="img-fluid rounded mb-4 mb-lg-0" src="{% static 'core/img/musculacion.jpeg' %}" alt="..." /></div>
+                    
+                </div>
+                <div class="row gx-6 gx-lg-6 align-items-center my-4">
+                    <a class="btn btn-primary btn-sm" href="#!">Consultas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
