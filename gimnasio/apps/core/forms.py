@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from . import models
+from .models import Rutina
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
@@ -54,8 +55,14 @@ class EjercicioForm(forms.ModelForm):
 
 class RutinaForm(forms.ModelForm):
     class Meta:
-        model = models.Rutina
-        fields = "__all__"
+        model = Rutina
+        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        clientes = kwargs.pop('clientes', None)
+        super(RutinaForm, self).__init__(*args, **kwargs)
+        if clientes:
+            self.fields['cliente'].queryset = clientes
+
 
 class DetalleRutinaForm(forms.ModelForm):
     class Meta:

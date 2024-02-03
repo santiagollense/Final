@@ -1,12 +1,15 @@
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
-from django.shortcuts import get_object_or_404
 import calendar
 import locale
 
 from . import models
 from . import forms
+
+from .models import Rutina, Gymbro
+from .forms import RutinaForm
+
 
 def index(request):
     return render (request, "core/index.html")
@@ -122,21 +125,40 @@ def ejercicio_form(request):
         form = forms.EjercicioForm()
     return render (request, "core/ejercicio_form.html", {"form": form})
 
+#def rutina_list(request):
+#    consulta = models.Rutina.objects.all()
+#    contexto = {"Rutinas": consulta}
+#    return render(request, "core/rutina_list.html", contexto)
+#
+#def rutina_list(request):
+#    clientes = Gymbro.objects.all()
+#    form = RutinaForm(clientes=clientes)
+#    # Otro código necesario para obtener las rutinas o cualquier otra lógica de la vista
+#
+#    return render(request, "core/rutina_list.html", {"form": form, "otras_variables": otras_variables})
+
+
+
 def rutina_list(request):
-    consulta = models.Rutina.objects.all()
-    contexto = {"Rutinas": consulta}
+    consulta = Rutina.objects.all()
+    clientes = Gymbro.objects.all()
+    form = RutinaForm(clientes=clientes)
+    contexto = {
+        "Rutinas": consulta,
+        "form": form,
+    }
     return render(request, "core/rutina_list.html", contexto)
 
-def rutina_form(request, cliente_id):
-    cliente = get_object_or_404(models.Gymbro, pk=cliente_id)
+
+def rutina_form(request):
     if request.method == "POST":
         form = forms.RutinaForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect("core:rutina_list")
     else:
-        form = forms.RutinaForm(initial={'cliente': cliente})
-    return render (request, "core/rutina_form.html", {"form": form})
+        form = forms.RutinaForm()
+    return render(request, "core/rutina_form.html", {"form": form})
 
 def detallerutina_list(request):
     consulta = models.DetalleRutina.objects.all()
