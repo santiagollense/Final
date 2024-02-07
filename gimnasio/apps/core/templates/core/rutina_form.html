@@ -1,10 +1,12 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+
+    <h2>Rutinas para {{nombre}}</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit">Guardar</button>
+        {{ form.as_p }}
+        <button type="submit">Guardar Rutina</button>
     </form>
-    
+
 {% endblock content %}

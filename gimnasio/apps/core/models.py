@@ -52,11 +52,17 @@ class Ejercicio(models.Model):
 
     def __str__(self) -> str:
         return self.ejercicio
+    
+class DiaSemana(models.Model):
+    dia = models.CharField(max_length=20)
+
+    def __str__(self) -> str:
+        return self.dia
 
 class Rutina(models.Model):
     cliente = models.ForeignKey(Gymbro, on_delete=models.CASCADE)
     fecha = models.DateField()
-    dia_semana = models.CharField(max_length=20, null=True, blank=True)  # Ejemplo: Lunes, Martes, ...
+    dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, null=True, blank=True)
     ejercicios = models.ManyToManyField(Ejercicio, through='DetalleRutina')
 
     def __str__(self) -> str:

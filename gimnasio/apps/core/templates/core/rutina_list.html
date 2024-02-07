@@ -5,22 +5,6 @@
     <button><a href="{% url 'core:rutina_form' %}">Cargar Rutinas</a></button>
     <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
 
-    <h2>Rutinas</h2>
-    <form method="post" action="{% url 'core:rutina_form' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar Rutina</button>
-    </form>
-
-    <ul>
-        {% for rutina in rutinas %}
-            <li>
-                {{ rutina.cliente.nombre }}
-                {{ rutina.fecha }}
-                {{ rutina.dia_semana }}
-            </li>
-        {% endfor %}
-    </ul>
 
     {% for rutina in Rutinas %}
     <ul>
@@ -30,6 +14,6 @@
             {{rutina.dia_semana}}
         </li>
     </ul>
-{% endfor %}
+    {% endfor %}
 
 {% endblock content %}

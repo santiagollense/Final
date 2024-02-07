@@ -18,30 +18,27 @@
         </select>
         <input type="submit" value="Filtrar">
     </form>
-    
     <!-- Vista -->
     {% for rutina in rutinas %}
-        {% if dia_seleccionado is none or rutina.dia_semana|lower == dia_seleccionado %}
-            <h3>Fecha: {{ rutina.fecha }} - Día de la Semana: {{ rutina.dia_semana }}</h3>
-            <table border="1">
-                <thead>
+        <h3>Fecha: {{ rutina.fecha }} - Día de la Semana: {{ rutina.dia_semana }}</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Ejercicio</th>
+                    <th>Repeticiones</th>
+                    <th>Series</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in rutina.detallerutina_set.all %}
                     <tr>
-                        <th>Ejercicio</th>
-                        <th>Repeticiones</th>
-                        <th>Series</th>
+                        <td>{{ detalle.ejercicio.ejercicio }}</td>
+                        <td>{{ detalle.repeticiones }}</td>
+                        <td>{{ detalle.series }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for detalle in rutina.detallerutina_set.all %}
-                        <tr>
-                            <td>{{ detalle.ejercicio.ejercicio }}</td>
-                            <td>{{ detalle.repeticiones }}</td>
-                            <td>{{ detalle.series }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
     {% endfor %}
 
 
