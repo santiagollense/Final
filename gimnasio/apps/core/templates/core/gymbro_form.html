@@ -1,12 +1,18 @@
 {% extends 'core/base.html' %}
 
-{% block content %}
+{% block title %}
+    | Registro GymBro
+{% endblock title %}
 
-    <button><a href="{% url 'core:register' %}">Nuevo User</a></button>
+{% block content_title %}
+    Registro GymBro
+{% endblock content_title %}
+
+{% block content %}
 
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <button type="submit">Guardar</button>
     </form>
     

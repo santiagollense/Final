@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from . import models
-from .models import Rutina
+from .models import Rutina, Gymbro
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
@@ -35,8 +35,25 @@ class EstadoForm(forms.ModelForm):
 
 class GymbroForm(forms.ModelForm):
     class Meta:
-        model = models.Gymbro
-        fields = "__all__"
+        model = Gymbro
+        fields = ['user', 'estado', 'nombre', 'dni', 'fecha_nac', 'dir', 'tel', 'email', 'os']
+    
+    #def __init__(self, *args, user=None, **kwargs):
+    #    super().__init__(*args, **kwargs)
+    #    if user:
+    #        self.initial['user'] = user
+    #        self.fields['user'].widget = forms.widgets.TextInput(attrs={'readonly': True})
+    #        #self.fields['user'].disabled = True 
+    #        self.fields['user'].queryset = self.fields['user'].queryset.filter(username=user)
+    #        #self.fields['user'].initial = user
+    #        self.fields['user'].widget.attrs['readonly'] = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configurar el campo user para mostrar el nombre de usuario si ya está configurado
+        if self.instance.user:
+            self.fields['user'].widget.attrs['readonly'] = True  # Hacer el campo de solo lectura
+            self.fields['user'].initial = self.instance.user.username  # Mostrar el nombre de usuario
 
 class TurnoForm(forms.ModelForm):
     class Meta:

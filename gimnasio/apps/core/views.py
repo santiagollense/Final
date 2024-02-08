@@ -4,6 +4,8 @@ from .forms import CustomAuthenticationForm, CustomUserCreationForm
 import calendar
 import locale
 
+from django.contrib.auth.models import User
+
 from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
@@ -14,7 +16,7 @@ from . import models
 from . import forms
 
 from .models import Rutina, Gymbro, DetalleRutina
-from .forms import RutinaForm, ClienteFilterForm, DetalleRutinaForm
+from .forms import RutinaForm, ClienteFilterForm, DetalleRutinaForm, GymbroForm
 
 
 def index(request):
@@ -29,7 +31,9 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("core:gymbro_form")
+            gymbro_instance = form.save()
+            username = str(gymbro_instance.username)
+            return redirect(reverse("core:gymbro_form") + f"?username={username}")
     else:  # if request.method == "GET":
         form = CustomUserCreationForm()
     return render(request, "core/register.html", {"form": form})
@@ -79,16 +83,26 @@ def gymbro_list(request):
 
 @login_required
 def gymbro_form(request):
+    username = request.GET.get('username')  # Obtener el nombre de usuario de los parámetros de la URL
+    user_instance = User.objects.filter(username=username).first()
+
     if request.method == "POST":
-        form = forms.GymbroForm(request.POST)
-        print(Gymbro.nombre)
+        # Crear una instancia de Gymbro con el usuario correspondiente
+        gymbro_instance = Gymbro(user=user_instance)
+        form = GymbroForm(request.POST, instance=gymbro_instance)
         if form.is_valid():
-            gymbro_instance = form.save()  # Guarda el formulario y obtén la instancia de Gymbro
-            nombre = str(gymbro_instance.nombre)  # Imprime el campo "nombre" de la instancia de Gymbro
+            form.save()
+            nombre = gymbro_instance.nombre  # Obtener el nombre del nuevo Gymbro registrado
             return redirect(reverse("core:rutina_form") + f"?nombre={nombre}")
     else:
-        form = forms.GymbroForm()
-    return render (request, "core/gymbro_form.html", {"form": form})
+        if user_instance:
+            # Crear una instancia de Gymbro con el usuario correspondiente si está disponible
+            gymbro_instance = Gymbro(user=user_instance)
+            form = GymbroForm(instance=gymbro_instance)
+        else:
+            form = GymbroForm()  # Crear un formulario vacío si no se proporciona un nombre de usuario
+
+    return render(request, "core/gymbro_form.html", {"form": form})
 
 @login_required
 def turno_list(request):
@@ -155,15 +169,14 @@ def rutina_list(request):
 @login_required
 def rutina_form(request):
     nombre = request.GET.get('nombre', None)
-    print("Nombre del cliente:", nombre) 
     if request.method == "POST":
         form = forms.RutinaForm(request.POST)
         if form.is_valid():
+            form.instance.cliente = nombre
             form.save()
             return redirect("core:rutina_list")
     else:
         form = forms.RutinaForm(nombre=nombre)
-        print("Valor del cliente en el formulario:", form.fields['cliente'].initial)
     return render(request, "core/rutina_form.html", {"form": form, "nombre": nombre})
 
 @login_required
