@@ -1,5 +1,13 @@
 {% extends 'core/base.html' %}
 
+{% block title %}
+    | Listado de GymBros
+{% endblock title %}
+
+{% block content_title %}
+    Listado de GymBros
+{% endblock content_title %}
+
 {% block content %}
     
     {% for gymbro in Gymbros %}
@@ -12,7 +20,6 @@
         </ul>
     {% endfor %}
 
-    <button><a href="{% url 'core:gymbro_form' %}">Cargar GymBros</a></button>
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
     
 {% endblock content %}

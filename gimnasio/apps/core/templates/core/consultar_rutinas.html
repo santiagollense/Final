@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    <h1>Rutinas para {{ user.username }}</h1>
+    <h1>Rutinas para {{cliente}}</h1>
 
     <form method="get" action="{% url 'core:consultar_rutinas' %}">
         <label for="dia_semana_espanol">Seleccionar día de la semana:</label>

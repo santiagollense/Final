@@ -4,13 +4,14 @@ from .forms import CustomAuthenticationForm, CustomUserCreationForm
 import calendar
 import locale
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 from django.contrib.auth.models import User
 
 from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
-
-from django.http import JsonResponse
 
 from . import models
 from . import forms
@@ -87,7 +88,6 @@ def gymbro_form(request):
     user_instance = User.objects.filter(username=username).first()
 
     if request.method == "POST":
-        # Crear una instancia de Gymbro con el usuario correspondiente
         gymbro_instance = Gymbro(user=user_instance)
         form = GymbroForm(request.POST, instance=gymbro_instance)
         if form.is_valid():
@@ -158,30 +158,39 @@ def ejercicio_form(request):
 @login_required
 def rutina_list(request):
     consulta = Rutina.objects.all()
-    clientes = Gymbro.objects.all()
-    form = RutinaForm(clientes=clientes)
-    contexto = {
-        "Rutinas": consulta,
-        "form": form,
-    }
+    contexto = {"Rutinas": consulta}
     return render(request, "core/rutina_list.html", contexto)
 
 @login_required
 def rutina_form(request):
-    nombre = request.GET.get('nombre', None)
+    nombre = request.GET.get('nombre') 
+    cliente_instance = Gymbro.objects.filter(nombre=nombre).first()
+
     if request.method == "POST":
-        form = forms.RutinaForm(request.POST)
+        if cliente_instance:
+            form = RutinaForm(request.POST)
+            if form.is_valid():
+                rutina_instance = form.save(commit=False)
+                rutina_instance.cliente = cliente_instance
+                rutina_instance.save()  
+                return redirect(reverse("core:rutina_form") + f"?nombre={nombre}")
+        else:
+            form = RutinaForm(request.POST)
         if form.is_valid():
-            form.instance.cliente = nombre
             form.save()
             return redirect("core:rutina_list")
     else:
-        form = forms.RutinaForm(nombre=nombre)
+        if nombre:
+            rutina_instance = Rutina(cliente=cliente_instance)
+            form = RutinaForm(instance=rutina_instance)
+        else:
+            form = RutinaForm()
+
     return render(request, "core/rutina_form.html", {"form": form, "nombre": nombre})
+
 
 @login_required
 def detallerutina_list(request):
-
     consulta = DetalleRutina.objects.all()
     contexto = {"DetalleRutinas": consulta}
     return render(request, "core/detallerutina_list.html", contexto)
@@ -189,22 +198,38 @@ def detallerutina_list(request):
 @login_required
 def detallerutina_form(request):
     filtro_form = ClienteFilterForm(request.GET)
-    clientes_filtrados = filtro_form.filter_clientes()
-    print("clientes_filtrados:", clientes_filtrados)
+    cliente_nombre = request.GET.get('nombre') or request.session.get('cliente_nombre')
+    if request.method == "GET":
+        request.session['cliente_nombre'] = cliente_nombre
+
     if request.method == "POST":
+        print("Entro a POST")
         form = DetalleRutinaForm(request.POST)
+        print("form is valid: ", form.is_valid())
         if form.is_valid():
-            form.save()
-            return redirect("core:detallerutina_list")
-    else:
-        form = DetalleRutinaForm()
+            print("Entro a valid")
+            try:
+                form.save()
+                print("Entro a save")
+                messages.success(request, "¡El dato se guardó correctamente!")
+                print("Guardado correctamente")
+                
+                return redirect(reverse("core:detallerutina_form") + f"?nombre={cliente_nombre}")
+            except Exception as e:
+                messages.error(request, f"Error al guardar el dato: {str(e)}")
+        else:
+            errors = form.errors.as_data()
+            print("Errores de validación del formulario:", errors)
+            for field, error_list in errors.items():
+                for error in error_list:
+                    messages.error(request, f"Error en el campo '{field}': {error}")
+            print("Errores de validación del formulario:", form.errors)
+
     
-    if request.headers.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':  # Verifica si la solicitud es AJAX
-        resultados = [{'cliente': cliente.cliente, 'fecha': cliente.fecha, 'dia_semana': cliente.dia_semana} for cliente in clientes_filtrados]
-        return JsonResponse(resultados, safe=False)
-    else:  # Si no es una solicitud AJAX, devuelve la página HTML
-        return render(request, "core/detallerutina_form.html", {"form": form, "filtro_form": filtro_form})
-    
+    form = DetalleRutinaForm(cliente_nombre=cliente_nombre)
+
+    return render(request, "core/detallerutina_form.html", {"form": form, "nombre": cliente_nombre, "filtro_form": filtro_form})
+
 @login_required
 def consultar_rutinas(request, dia=None):
     cliente = request.user.gymbro
@@ -215,11 +240,11 @@ def consultar_rutinas(request, dia=None):
     if dia_seleccionado:
         dia_seleccionado = dia_seleccionado.capitalize()
         if dia:
-            rutinas = Rutina.objects.filter(cliente=cliente, fecha__week_day=dia, dia_semana__exact=dia_seleccionado)
+            rutinas = Rutina.objects.filter(cliente=cliente, fecha__week_day=dia, dia_semana__dia=dia_seleccionado)
         else:
-            rutinas = Rutina.objects.filter(cliente=cliente, dia_semana__exact=dia_seleccionado)
+            rutinas = Rutina.objects.filter(cliente=cliente, dia_semana__dia=dia_seleccionado)
     else:
         rutinas = []
 
-    return render(request, 'core/consultar_rutinas.html', {'rutinas': rutinas, 'dias_semana': dias_semana_espanol, 'dia_seleccionado': dia_seleccionado})
+    return render(request, 'core/consultar_rutinas.html', {'rutinas': rutinas, 'dias_semana': dias_semana_espanol, 'dia_seleccionado': dia_seleccionado,'cliente': cliente})
 

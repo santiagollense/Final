@@ -14,7 +14,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Registrar Usuario</button>
-        <a href="{% url 'core:index' %}" class="btn btn-secondary">Cancelar</a>
+        <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 
 {% endblock content %}

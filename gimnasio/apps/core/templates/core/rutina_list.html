@@ -1,5 +1,13 @@
 {% extends 'core/base.html' %}
 
+{% block title %}
+    | Listado de Rutinas
+{% endblock title %}
+
+{% block content_title %}
+    Listado de Rutinas
+{% endblock content_title %}
+
 {% block content %}
 
     <button><a href="{% url 'core:rutina_form' %}">Cargar Rutinas</a></button>

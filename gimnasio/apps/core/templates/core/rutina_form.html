@@ -1,12 +1,28 @@
 {% extends 'core/base.html' %}
 
+{% block title %}
+    | Carga de Rutinas
+{% endblock title %}
+
+{% block content_title %}
+    Carga de Rutinas
+{% endblock content_title %}
+
 {% block content %}
 
-    <h2>Rutinas para {{nombre}}</h2>
+    {% if nombre %}
+        <h2>Rutinas para {{nombre}}</h2>
+    {% endif %}
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Guardar Rutina</button>
     </form>
+    
+    <button><a href="{% url 'core:detallerutina_form' %}?nombre={{nombre}}">Detalle Plan de Rutinas</a></button>
+
+    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+
 
 {% endblock content %}

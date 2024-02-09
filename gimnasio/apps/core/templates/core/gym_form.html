@@ -1,5 +1,13 @@
 {% extends 'core/base.html' %}
 
+{% block title %}
+    | Carga de Sedes
+{% endblock title %}
+
+{% block content_title %}
+    Carga de Sedes
+{% endblock content_title %}
+
 {% block content %}
     <form method="post">
         {% csrf_token %}

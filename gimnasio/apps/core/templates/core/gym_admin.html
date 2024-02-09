@@ -1,15 +1,44 @@
 {% extends 'core/base.html' %}
 
-{% block content %}
-    <h2>Admin</h2>
+{% block title %}
+    | Panel de Administración
+{% endblock title %}
 
-    <button><a href="{% url 'core:gym_list' %}">Ver Gimnasios</a></button>
-    <button><a href="{% url 'core:register' %}">Registrar nuevo GymBro</a></button>
-    <button><a href="{% url 'core:gymbro_list' %}">Ver GymBros</a></button>
-    <button><a href="{% url 'core:turno_list' %}">Ver Turnos</a></button>
-    <button><a href="{% url 'core:entrenamiento_list' %}">Ver Entrenamientos</a></button>
-    <button><a href="{% url 'core:ejercicio_list' %}">Ver Ejercicios</a></button>
-    <button><a href="{% url 'core:rutina_list' %}">Ver Rutinas</a></button>
-    <button><a href="{% url 'core:detallerutina_list' %}">Ver Detalles de Rutinas</a></button>
-    
+{% block content %}
+
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:register' %}">New GymBro</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:gymbro_list' %}">GymBro List</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:detallerutina_list' %}">Detalle Rutina</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:rutina_list' %}">Rutinas</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:ejercicio_list' %}">Ejercicios</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:entrenamiento_list' %}">Entrenamientos</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:turno_list' %}">Turnos</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'core:gym_list' %}">Gimnasios</a>
+            </div>
+        </div>
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+            <!-- Page content-->
+            <div class="container-fluid">
+                <h1 class="mt-4">Panel de Administración</h1>
+                <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+                <p>
+                    Make sure to keep all page content within the
+                    <code>#page-content-wrapper</code>
+                    . The top navbar is optional, and just for demonstration. Just create an element with the
+                    <code>#sidebarToggle</code>
+                    ID which will toggle the menu when clicked.
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>    
+
 {% endblock content %}
