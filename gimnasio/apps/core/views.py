@@ -203,28 +203,19 @@ def detallerutina_form(request):
         request.session['cliente_nombre'] = cliente_nombre
 
     if request.method == "POST":
-        print("Entro a POST")
         form = DetalleRutinaForm(request.POST)
-        print("form is valid: ", form.is_valid())
         if form.is_valid():
-            print("Entro a valid")
             try:
                 form.save()
-                print("Entro a save")
-                messages.success(request, "¡El dato se guardó correctamente!")
-                print("Guardado correctamente")
                 
                 return redirect(reverse("core:detallerutina_form") + f"?nombre={cliente_nombre}")
             except Exception as e:
                 messages.error(request, f"Error al guardar el dato: {str(e)}")
         else:
             errors = form.errors.as_data()
-            print("Errores de validación del formulario:", errors)
             for field, error_list in errors.items():
                 for error in error_list:
                     messages.error(request, f"Error en el campo '{field}': {error}")
-            print("Errores de validación del formulario:", form.errors)
-
     
     form = DetalleRutinaForm(cliente_nombre=cliente_nombre)
 
@@ -244,7 +235,7 @@ def consultar_rutinas(request, dia=None):
         else:
             rutinas = Rutina.objects.filter(cliente=cliente, dia_semana__dia=dia_seleccionado)
     else:
-        rutinas = []
+        rutinas = Rutina.objects.filter(cliente=cliente)
 
     return render(request, 'core/consultar_rutinas.html', {'rutinas': rutinas, 'dias_semana': dias_semana_espanol, 'dia_seleccionado': dia_seleccionado,'cliente': cliente})
 

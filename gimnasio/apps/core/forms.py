@@ -77,17 +77,38 @@ class RutinaForm(forms.ModelForm):
                 self.fields['cliente'].initial = self.instance.cliente
                 self.fields['fecha'].initial = timezone.now().date()
 
+#class DetalleRutinaForm(forms.ModelForm):
+#    class Meta:
+#        model = DetalleRutina
+#        fields = ['rutina', 'ejercicio', 'repeticiones', 'series']
+#
+#    def __init__(self, cliente_nombre=None, *args, **kwargs):
+#        super().__init__(*args, **kwargs)
+#        if cliente_nombre is not None: 
+#            cliente_instance = Gymbro.objects.filter(nombre=cliente_nombre).first()
+#            if cliente_instance:
+#                self.fields['rutina'].queryset = Rutina.objects.filter(cliente=cliente_instance)
+
 class DetalleRutinaForm(forms.ModelForm):
     class Meta:
         model = DetalleRutina
         fields = ['rutina', 'ejercicio', 'repeticiones', 'series']
 
-    def __init__(self, cliente_nombre=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        cliente_nombre = kwargs.pop('cliente_nombre', None)
         super().__init__(*args, **kwargs)
-        if cliente_nombre is not None: 
+        if cliente_nombre:
             cliente_instance = Gymbro.objects.filter(nombre=cliente_nombre).first()
             if cliente_instance:
-                self.fields['rutina'].queryset = Rutina.objects.filter(cliente=cliente_instance)
+                self.fields['rutina'].queryset = cliente_instance.rutina_set.all()
+
+
+#class DetalleRutinaForm(forms.ModelForm):
+#    class Meta:
+#        model = models.DetalleRutina
+#        fields = "__all__"
+
+
     
 class ClienteFilterForm(forms.Form):
     cliente = forms.CharField(required=False)
