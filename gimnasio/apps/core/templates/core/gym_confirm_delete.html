@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Borrar Sedes
+{% endblock title %}
+
+{% block content_title %}
+    Borrar Sedes
+{% endblock content_title %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>¿Desea borrar la sede? {{ object.nombre }}</p>
+        <button type="submit">Sí</button>
+    </form>
+    
+{% endblock content %}

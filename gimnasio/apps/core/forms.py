@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
-from . import models
-from .models import Rutina, Gymbro, DetalleRutina
+from .models import *
 from django.utils import timezone
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -26,12 +25,12 @@ class CustomUserCreationForm(UserCreationForm):
 
 class GymForm(forms.ModelForm):
     class Meta:
-        model = models.Gym
+        model = Gym
         fields = "__all__"
 
 class EstadoForm(forms.ModelForm):
     class Meta:
-        model = models.Estado
+        model = Estado
         fields = "__all__"
 
 class GymbroForm(forms.ModelForm):
@@ -48,17 +47,17 @@ class GymbroForm(forms.ModelForm):
 
 class TurnoForm(forms.ModelForm):
     class Meta:
-        model = models.Turno
+        model = Turno
         fields = "__all__"
 
 class EntrenamientoForm(forms.ModelForm):
     class Meta:
-        model = models.Entrenamiento
+        model = Entrenamiento
         fields = "__all__"
 
 class EjercicioForm(forms.ModelForm):
     class Meta:
-        model = models.Ejercicio
+        model = Ejercicio
         fields = "__all__"
 
 class RutinaForm(forms.ModelForm):
@@ -77,18 +76,6 @@ class RutinaForm(forms.ModelForm):
                 self.fields['cliente'].initial = self.instance.cliente
                 self.fields['fecha'].initial = timezone.now().date()
 
-#class DetalleRutinaForm(forms.ModelForm):
-#    class Meta:
-#        model = DetalleRutina
-#        fields = ['rutina', 'ejercicio', 'repeticiones', 'series']
-#
-#    def __init__(self, cliente_nombre=None, *args, **kwargs):
-#        super().__init__(*args, **kwargs)
-#        if cliente_nombre is not None: 
-#            cliente_instance = Gymbro.objects.filter(nombre=cliente_nombre).first()
-#            if cliente_instance:
-#                self.fields['rutina'].queryset = Rutina.objects.filter(cliente=cliente_instance)
-
 class DetalleRutinaForm(forms.ModelForm):
     class Meta:
         model = DetalleRutina
@@ -101,14 +88,6 @@ class DetalleRutinaForm(forms.ModelForm):
             cliente_instance = Gymbro.objects.filter(nombre=cliente_nombre).first()
             if cliente_instance:
                 self.fields['rutina'].queryset = cliente_instance.rutina_set.all()
-
-
-#class DetalleRutinaForm(forms.ModelForm):
-#    class Meta:
-#        model = models.DetalleRutina
-#        fields = "__all__"
-
-
     
 class ClienteFilterForm(forms.Form):
     cliente = forms.CharField(required=False)

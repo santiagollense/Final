@@ -1,5 +1,7 @@
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
+from django.urls import reverse_lazy
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
 import calendar
 import locale
@@ -13,10 +15,9 @@ from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
 
-from . import models
 from . import forms
 
-from .models import Rutina, Gymbro, DetalleRutina
+from .models import *
 from .forms import RutinaForm, ClienteFilterForm, DetalleRutinaForm, GymbroForm
 
 
@@ -42,26 +43,49 @@ def register(request):
 def gym_admin(request):
     return render (request, "core/gym_admin.html")
 
-@login_required
-def gym_list(request):
-    consulta = models.Gym.objects.all()
-    contexto = {"Gimnasios": consulta}
-    return render(request, "core/gym_list.html", contexto)
+class GymList(ListView):
+    model = Gym
+    def get_queryset(self):
+        query = self.request.GET.get("consulta")
+        if query:
+            return Gym.objects.filter(nombre__icontains=query)
+        return Gym.objects.all()
+    
+class GymCreate(CreateView):
+    model = Gym
+    form_class = forms.GymForm
+    success_url = reverse_lazy("core:gym_list")
 
-@login_required
-def gym_form(request):
-    if request.method == "POST":
-        form = forms.GymForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("core:gym_list")
-    else:
-        form = forms.GymForm()
-    return render (request, "core/gym_form.html", {"form": form})
+class GymUpdate(UpdateView):
+    model = Gym
+    form_class = forms.GymForm
+    success_url = reverse_lazy("core:gym_list")
+
+class GymDelete(DeleteView):
+    model = Gym
+    success_url = reverse_lazy("core:gym_list")
+
+#def gym_update(request, pk):
+#    consulta = Gym.objects.get(id=pk)
+#    if request.method == "POST":
+#        form = forms.GymForm(request.POST, instance=consulta)
+#        if form.is_valid():
+#            form.save()
+#            return redirect("core:gym_list")
+#    else:
+#        form = forms.GymForm(instance=consulta)
+#    return render (request, "core/gym_form.html", {"form": form})
+
+#def gym_delete(request, pk):
+#    consulta = Gym.objects.get(id=pk)
+#    if request.method == "POST":
+#        consulta.delete()
+#        return redirect("core:gym_list")
+#    return render (request, "core/gym_confirm_delete.html", {"object": consulta})
 
 @login_required
 def estado_list(request):
-    consulta = models.Estado.objects.all()
+    consulta = Estado.objects.all()
     contexto = {"Gimnasios": consulta}
     return render(request, "core/estado_list.html", contexto)
 
@@ -78,7 +102,7 @@ def estado_form(request):
 
 @login_required
 def gymbro_list(request):
-    consulta = models.Gymbro.objects.all()
+    consulta = Gymbro.objects.all()
     contexto = {"Gymbros": consulta}
     return render(request, "core/gymbro_list.html", contexto)
 
@@ -106,7 +130,7 @@ def gymbro_form(request):
 
 @login_required
 def turno_list(request):
-    consulta = models.Turno.objects.all()
+    consulta = Turno.objects.all()
     contexto = {"Turnos": consulta}
     return render(request, "core/turno_list.html", contexto)
 
@@ -123,7 +147,7 @@ def turno_form(request):
 
 @login_required
 def entrenamiento_list(request):
-    consulta = models.Entrenamiento.objects.all()
+    consulta = Entrenamiento.objects.all()
     contexto = {"Entrenamientos": consulta}
     return render(request, "core/entrenamiento_list.html", contexto)
 
@@ -140,7 +164,7 @@ def entrenamiento_form(request):
 
 @login_required
 def ejercicio_list(request):
-    consulta = models.Ejercicio.objects.all()
+    consulta = Ejercicio.objects.all()
     contexto = {"Ejercicios": consulta}
     return render(request, "core/ejercicio_list.html", contexto)
 

@@ -10,15 +10,27 @@
 
 {% block content %}
     
-    {% for gym in Gimnasios %}
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:gym_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar Gimnasios" value="{{ request.GET.consulta }}">
+            
+        </form>
+    </div>
+
+    {% for gym in object_list %}
         <ul>
             <li>
                 {{gym.nombre}}
                 {{gym.dir}}
                 {{gym.tel}}
                 {{gym.email}}
+                <a href="{% url 'core:gym_update' gym.id %}">Editar</a>
+                <a href="{% url 'core:gym_delete' gym.id %}">Eliminar</a>
             </li>
         </ul>
+    {% empty %}
+        <p>No se encontraron Gimnasios</p>
+
     {% endfor %}
 
     <button><a href="{% url 'core:gym_form' %}">Cargar Gimnasios</a></button>
