@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Eliminar Rutina
+{% endblock title %}
+
+{% block content_title %}
+    Eliminar Rutina
+{% endblock content_title %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>¿Desea borrar Rutina {{ object.nombre }}?</p>
+        <button type="submit">Sí</button>
+    </form>
+    
+{% endblock content %}

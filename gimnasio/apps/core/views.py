@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
@@ -20,6 +21,9 @@ from . import forms
 from .models import *
 from .forms import RutinaForm, ClienteFilterForm, DetalleRutinaForm, GymbroForm
 
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
 
 def index(request):
     return render (request, "core/index.html")
@@ -43,7 +47,7 @@ def register(request):
 def gym_admin(request):
     return render (request, "core/gym_admin.html")
 
-class GymList(ListView):
+class GymList(LoginRequiredMixin, AdminRequiredMixin, ListView):
     model = Gym
     def get_queryset(self):
         query = self.request.GET.get("consulta")
@@ -51,17 +55,17 @@ class GymList(ListView):
             return Gym.objects.filter(nombre__icontains=query)
         return Gym.objects.all()
     
-class GymCreate(CreateView):
+class GymCreate(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     model = Gym
     form_class = forms.GymForm
     success_url = reverse_lazy("core:gym_list")
 
-class GymUpdate(UpdateView):
+class GymUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     model = Gym
     form_class = forms.GymForm
     success_url = reverse_lazy("core:gym_list")
 
-class GymDelete(DeleteView):
+class GymDelete(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = Gym
     success_url = reverse_lazy("core:gym_list")
 
@@ -100,11 +104,19 @@ def estado_form(request):
         form = forms.GymForm()
     return render (request, "core/gym_form.html", {"form": form})
 
-@login_required
-def gymbro_list(request):
-    consulta = Gymbro.objects.all()
-    contexto = {"Gymbros": consulta}
-    return render(request, "core/gymbro_list.html", contexto)
+#@login_required
+#def gymbro_list(request):
+#    consulta = Gymbro.objects.all()
+#    contexto = {"Gymbros": consulta}
+#    return render(request, "core/gymbro_list.html", contexto)
+
+class GymBroList(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Gymbro
+    def get_queryset(self):
+        query = self.request.GET.get("consulta")
+        if query:
+            return Gymbro.objects.filter(nombre__icontains=query)
+        return Gymbro.objects.all()
 
 @login_required
 def gymbro_form(request):
@@ -127,6 +139,15 @@ def gymbro_form(request):
             form = GymbroForm()  # Crear un formulario vacío si no se proporciona un nombre de usuario
 
     return render(request, "core/gymbro_form.html", {"form": form})
+
+class GymBroUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = Gymbro
+    form_class = forms.GymbroForm
+    success_url = reverse_lazy("core:gymbro_list")
+
+class GymBroDelete(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = Gymbro
+    success_url = reverse_lazy("core:gymbro_list")
 
 @login_required
 def turno_list(request):
@@ -162,29 +183,53 @@ def entrenamiento_form(request):
         form = forms.EntrenamientoForm()
     return render (request, "core/entrenamiento_form.html", {"form": form})
 
-@login_required
-def ejercicio_list(request):
-    consulta = Ejercicio.objects.all()
-    contexto = {"Ejercicios": consulta}
-    return render(request, "core/ejercicio_list.html", contexto)
+#@login_required
+#def ejercicio_list(request):
+#    consulta = Ejercicio.objects.all()
+#    contexto = {"Ejercicios": consulta}
+#    return render(request, "core/ejercicio_list.html", contexto)
+#
+#@login_required
+#def ejercicio_form(request):
+#    if request.method == "POST":
+#        form = forms.EjercicioForm(request.POST)
+#        if form.is_valid():
+#            form.save()
+#            return redirect("core:ejercicio_list")
+#    else:
+#        form = forms.EjercicioForm()
+#    return render (request, "core/ejercicio_form.html", {"form": form})
 
-@login_required
-def ejercicio_form(request):
-    if request.method == "POST":
-        form = forms.EjercicioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("core:ejercicio_list")
-    else:
-        form = forms.EjercicioForm()
-    return render (request, "core/ejercicio_form.html", {"form": form})
+class EjercicioList(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Ejercicio
+    def get_queryset(self):
+        query = self.request.GET.get("consulta")
+        if query:
+            return Ejercicio.objects.filter(nombre__icontains=query)
+        return Ejercicio.objects.all()
+    
+class EjercicioCreate(LoginRequiredMixin, AdminRequiredMixin, CreateView):
+    model = Ejercicio
+    form_class = forms.EjercicioForm
+    success_url = reverse_lazy("core:ejercicio_list")
 
-@login_required
-def rutina_list(request):
-    consulta = Rutina.objects.all()
-    contexto = {"Rutinas": consulta}
-    return render(request, "core/rutina_list.html", contexto)
+class EjercicioUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = Ejercicio
+    form_class = forms.EjercicioForm
+    success_url = reverse_lazy("core:ejercicio_list")
 
+class EjercicioDelete(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = Ejercicio
+    success_url = reverse_lazy("core:ejercicio_list")
+
+class RutinaList(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Rutina
+    def get_queryset(self):
+        query = self.request.GET.get("consulta")
+        if query:
+            return Rutina.objects.filter(cliente__nombre__icontains=query)
+        return Rutina.objects.all()
+    
 @login_required
 def rutina_form(request):
     nombre = request.GET.get('nombre') 
@@ -212,12 +257,22 @@ def rutina_form(request):
 
     return render(request, "core/rutina_form.html", {"form": form, "nombre": nombre})
 
+class RutinaUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = Rutina
+    form_class = forms.RutinaForm
+    success_url = reverse_lazy("core:rutina_list")
 
-@login_required
-def detallerutina_list(request):
-    consulta = DetalleRutina.objects.all()
-    contexto = {"DetalleRutinas": consulta}
-    return render(request, "core/detallerutina_list.html", contexto)
+class RutinaDelete(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = Rutina
+    success_url = reverse_lazy("core:rutina_list")
+
+class DetalleRutinaList(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = DetalleRutina
+    def get_queryset(self):
+        query = self.request.GET.get("consulta")
+        if query:
+            return DetalleRutina.objects.filter(rutina__cliente__nombre__icontains=query)
+        return DetalleRutina.objects.all()
 
 @login_required
 def detallerutina_form(request):
@@ -244,6 +299,15 @@ def detallerutina_form(request):
     form = DetalleRutinaForm(cliente_nombre=cliente_nombre)
 
     return render(request, "core/detallerutina_form.html", {"form": form, "nombre": cliente_nombre, "filtro_form": filtro_form})
+
+class DetalleRutinaUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = DetalleRutina
+    form_class = forms.DetalleRutinaForm
+    success_url = reverse_lazy("core:detallerutina_list")
+
+class DetalleRutinaDelete(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = DetalleRutina
+    success_url = reverse_lazy("core:detallerutina_list")
 
 @login_required
 def consultar_rutinas(request, dia=None):

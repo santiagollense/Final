@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Eliminar Detalle de Rutina
+{% endblock title %}
+
+{% block content_title %}
+    Eliminar Detalle de Rutina
+{% endblock content_title %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>¿Desea borrar el Detale de la Rutina {{ object.nombre }}?</p>
+        <button type="submit">Sí</button>
+    </form>
+    
+{% endblock content %}

@@ -9,15 +9,26 @@
 {% endblock content_title %}
 
 {% block content %}
+
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:gymbro_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar GymBro" value="{{ request.GET.consulta }}">
+        </form>
+    </div>
     
-    {% for gymbro in Gymbros %}
+    {% for gymbro in object_list %}
         <ul>
             <li>
                 {{gymbro.nombre}}
                 {{gymbro.tel}}
                 {{gymbro.email}}
+                <a href="{% url 'core:gymbro_update' gymbro.id %}">Editar</a>
+                <a href="{% url 'core:gymbro_delete' gymbro.id %}">Eliminar</a>
+            
             </li>
         </ul>
+    {% empty %}
+        <p>No se encontraron GymBros</p>
     {% endfor %}
 
     <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>

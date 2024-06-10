@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Eliminar Ejercicio
+{% endblock title %}
+
+{% block content_title %}
+    Eliminar Ejercicio
+{% endblock content_title %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>¿Desea borrar Ejercicio {{ object.nombre }}?</p>
+        <button type="submit">Sí</button>
+    </form>
+    
+{% endblock content %}

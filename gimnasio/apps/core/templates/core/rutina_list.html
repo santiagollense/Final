@@ -10,18 +10,29 @@
 
 {% block content %}
 
-    <button><a href="{% url 'core:rutina_form' %}">Cargar Rutinas</a></button>
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:rutina_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar Rutinas" value="{{ request.GET.consulta }}">
+        </form>
+    </div>
 
-
-    {% for rutina in Rutinas %}
+    {% for rutina in object_list %}
     <ul>
         <li>
             {{rutina.cliente}}
             {{rutina.fecha}}
             {{rutina.dia_semana}}
+            <a href="{% url 'core:rutina_update' rutina.id %}">Editar</a>
+            <a href="{% url 'core:rutina_delete' rutina.id %}">Eliminar</a>
         </li>
     </ul>
+    {% empty %}
+        <p>No se encontraron Rutinas</p>
+
     {% endfor %}
+
+    
+    <a href="{% url 'core:rutina_form' %}" class="btn btn-secondary">Cargar Rutinas</a>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
 
 {% endblock content %}

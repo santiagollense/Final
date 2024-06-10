@@ -10,17 +10,29 @@
 
 {% block content %}
 
-    {% for detallerutina in DetalleRutinas %}
-        <ul>
-            <li>
-                {{detallerutina.rutina}}
-                {{detallerutina.ejercicio}}
-                {{detallerutina.repeticiones}}
-                {{detallerutina.series}}
-            </li>
-        </ul>
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:detallerutina_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar Plan de GymBro" value="{{ request.GET.consulta }}">
+        </form>
+    </div>
+
+    {% for detallerutina in object_list %}
+    <ul>
+        <li>
+            {{detallerutina.rutina}}
+            {{detallerutina.ejercicio}}
+            {{detallerutina.repeticiones}}
+            {{detallerutina.series}}
+            <a href="{% url 'core:detallerutina_update' detallerutina.id %}">Editar</a>
+            <a href="{% url 'core:detallerutina_delete' detallerutina.id %}">Eliminar</a>
+        </li>
+    </ul>
+    {% empty %}
+        <p>No se encontraron Planes de GymBros</p>
+
     {% endfor %}
-    <button><a href="{% url 'core:detallerutina_form' %}">Cargar Plan de GymBro</a></button>
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+
+    <a href="{% url 'core:detallerutina_form' %}" class="btn btn-secondary">Cargar Plan de GymBro</a>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
 
 {% endblock content %}
