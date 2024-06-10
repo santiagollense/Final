@@ -10,13 +10,26 @@
 
 {% block content %}
     
-    {% for entrenamiento in Entrenamientos %}
-        <ul>
-            <li>
-                {{entrenamiento.entrenamiento}}
-            </li>
-        </ul>
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:entrenamiento_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar entrenamiento" value="{{ request.GET.consulta }}">
+        </form>
+    </div>
+
+    {% for entrenamiento in object_list %}
+    <ul>
+        <li>
+            {{entrenamiento.entrenamiento}}
+            <a href="{% url 'core:entrenamiento_update' entrenamiento.id %}">Editar</a>
+            <a href="{% url 'core:entrenamiento_delete' entrenamiento.id %}">Eliminar</a>
+        </li>
+    </ul>
+    {% empty %}
+        <p>No se encontraron Entrenamientos</p>
+
     {% endfor %}
-    <button><a href="{% url 'core:entrenamiento_form' %}">Cargar Entrenamientos</a></button>
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+
+    <a href="{% url 'core:entrenamiento_form' %}" class="btn btn-secondary">Cargar Entrenamientos</a>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
+
 {% endblock content %}

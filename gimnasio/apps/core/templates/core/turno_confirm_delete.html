@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    | Eliminar Turno
+{% endblock title %}
+
+{% block content_title %}
+    Eliminar Turno
+{% endblock content_title %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>¿Desea borrar el Turno {{ object.turno }}?</p>
+        <button type="submit">Sí</button>
+    </form>
+    
+{% endblock content %}

@@ -10,13 +10,26 @@
 
 {% block content %}
     
-    {% for turno in Turnos %}
-        <ul>
-            <li>
-                {{turno.turno}}
-            </li>
-        </ul>
+    <div class="mb-4">
+        <form method="get" action="{% url 'core:turno_list' %}">
+            <input type="text" name="consulta" placeholder="Buscar Turno" value="{{ request.GET.consulta }}">
+        </form>
+    </div>
+
+    {% for turno in object_list %}
+    <ul>
+        <li>
+            {{turno.turno}}
+            <a href="{% url 'core:turno_update' turno.id %}">Editar</a>
+            <a href="{% url 'core:turno_delete' turno.id %}">Eliminar</a>
+        </li>
+    </ul>
+    {% empty %}
+        <p>No se encontraron Turnos</p>
+
     {% endfor %}
-    <button><a href="{% url 'core:turno_form' %}">Cargar Turnos</a></button>
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+
+    <a href="{% url 'core:turno_form' %}" class="btn btn-secondary">Cargar Turnos</a>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
+
 {% endblock content %}
