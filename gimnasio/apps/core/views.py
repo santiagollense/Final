@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from django.urls import reverse_lazy
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
@@ -121,9 +121,9 @@ def gymbro_form(request):
         gymbro_instance = Gymbro(user=user_instance)
         form = GymbroForm(request.POST, instance=gymbro_instance)
         if form.is_valid():
-            form.save()
+            gymbro_instance = form.save()
             nombre = gymbro_instance.nombre  # Obtener el nombre del nuevo Gymbro registrado
-            return redirect(reverse("core:rutina_form") + f"?nombre={nombre}")
+            return redirect(reverse("core:rutina_form", kwargs={'pk': gymbro_instance.pk}) + f"?nombre={nombre}")
     else:
         if user_instance:
             # Crear una instancia de Gymbro con el usuario correspondiente si está disponible
@@ -216,33 +216,25 @@ class RutinaList(LoginRequiredMixin, AdminRequiredMixin, ListView):
         if query:
             return Rutina.objects.filter(cliente__nombre__icontains=query)
         return Rutina.objects.all()
-    
+
 @login_required
-def rutina_form(request):
-    nombre = request.GET.get('nombre') 
-    cliente_instance = Gymbro.objects.filter(nombre=nombre).first()
+def rutina_form(request, pk):
+    # Obtén la instancia del cliente usando el pk
+    cliente_instance = get_object_or_404(Gymbro, pk=pk)
 
     if request.method == "POST":
-        if cliente_instance:
-            form = RutinaForm(request.POST)
-            if form.is_valid():
-                rutina_instance = form.save(commit=False)
-                rutina_instance.cliente = cliente_instance
-                rutina_instance.save()  
-                return redirect(reverse("core:rutina_form") + f"?nombre={nombre}")
-        else:
-            form = RutinaForm(request.POST)
+        form = RutinaForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("core:rutina_list")
+            rutina_instance = form.save(commit=False)
+            rutina_instance.cliente = cliente_instance
+            rutina_instance.save()  
+            return redirect(reverse("core:rutina_form", kwargs={'pk': pk}) + f"?nombre={cliente_instance.nombre}")
     else:
-        if nombre:
-            rutina_instance = Rutina(cliente=cliente_instance)
-            form = RutinaForm(instance=rutina_instance)
-        else:
-            form = RutinaForm()
+        # Si es una solicitud GET, inicializa el formulario
+        rutina_instance = Rutina(cliente=cliente_instance)
+        form = RutinaForm(instance=rutina_instance)
 
-    return render(request, "core/rutina_form.html", {"form": form, "nombre": nombre})
+    return render(request, "core/rutina_form.html", {"form": form, "nombre": cliente_instance.nombre})
 
 class RutinaUpdate(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     model = Rutina

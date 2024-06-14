@@ -20,9 +20,9 @@
         <button type="submit">Guardar Rutina</button>
     </form>
     
-    <button><a href="{% url 'core:detallerutina_form' %}?nombre={{nombre}}">Detalle Plan de Rutinas</a></button>
 
-    <button><a href="{% url 'core:gym_admin' %}">Atras</a></button>
+    <a href="{% url 'core:detallerutina_form' %}?nombre={{nombre}}" class="btn btn-secondary">Detalle Plan de Rutinas</a>
+    <a href="{% url 'core:gym_admin' %}" class="btn btn-secondary">Atras</a>
 
 
 {% endblock content %}
